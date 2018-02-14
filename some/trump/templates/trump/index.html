@@ -1,0 +1,35 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'trump/style.css' %}" />
+
+<body>
+
+<h1 class="main">THE GOD EMPEROR APP</h1>
+
+<div class="topnav">
+  <a href="#home">Home</a>
+  <a href="#tweets">Tweets</a>
+  <a href="#contact">Infographs</a>
+</div>
+
+<div class="news_table">
+
+<h1 class="sub">Latest Fake News</h2>
+
+{% if headline_list %}
+  <ul>
+  {% for headline in headline_list %}
+      <li>{{ headline.news_headline }}</li>
+  {% endfor %}
+  </ul>
+{% else %}
+    <p>No headlines are available.</p>
+{% endif %}
+
+</div>
+
+<div class="trump_img">
+  <img src="/static/trump/images/trump.gif" alt="Trump" width="200" height="200">
+</div>
+
+</body>
