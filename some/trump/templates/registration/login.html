@@ -1,0 +1,26 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'trump/style.css' %}" />
+
+<h1 class="main">THE GOD EMPEROR APP</h1>
+
+<div class="topnav">
+  <a href="{% url 'index' %}">Home</a>
+  <a href="#tweets">Tweets</a>
+  <a href="#contact">Infographs</a>
+</div>
+
+<div class="login">
+
+{% block content %}
+  <h2 style="color: white">Login</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
+
+  <a href="../../trump/signup/">Don't have an account?</a>
+{% endblock %}
+
+</div>

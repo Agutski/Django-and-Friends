@@ -7,10 +7,15 @@
 <h1 class="main">THE GOD EMPEROR APP</h1>
 
 <div class="topnav">
-  <a href="#home">Home</a>
+  <a href="{% url 'index' %}">Home</a>
   <a href="#tweets">Tweets</a>
   <a href="#contact">Infographs</a>
 </div>
+
+<div class="user_greetings">
+{% if user.is_authenticated %}
+  Hi {{ user.username }}, welcome to the president's fan page!
+
 
 <div class="news_table">
 
@@ -28,8 +33,18 @@
 
 </div>
 
+<div class="logout">
+  <button><a href="{% url 'logout' %}">logout</a></button>
+</div>
+
 <div class="trump_img">
   <img src="/static/trump/images/trump.gif" alt="Trump" width="200" height="200">
 </div>
-
+{% else %}
+  <div class="login">
+    <p>You are not logged in, log in to see all the great content this site hides!</p>
+    <a href="{% url 'login' %}">login</a>
+  </div>
+{% endif %}
+</div>
 </body>

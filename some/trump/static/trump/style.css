@@ -46,8 +46,24 @@ body{
   color: white;
 }
 
+.user_greetings{
+  font-size: 50px;
+  color: white;
+}
+
 .trump_img{
   position: absolute;
   bottom: 10px;
   right: 10px;
+}
+
+.logout{
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+.login{
+  font-size: 20px;
+  color: white;
 }
