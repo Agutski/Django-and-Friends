@@ -8,7 +8,19 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
-from .models import Trump, Tweet, CNN
+from .models import Profile, Tweet, CNN, Wikipedia
+import wikipedia
+
+#upadte wikipedia database
+Wikipedia.objects.all().delete()
+trump = wikipedia.page("Donald Trump")
+page_title = trump.title
+page_url = trump.url
+page_summary = wikipedia.summary("Donald Trump")
+page_content = trump.content
+
+w = Wikipedia(page_title= page_title, page_url = page_url, page_summary = page_summary, page_content= page_content)
+w.save()
 
 
 class IndexView(generic.ListView):
@@ -18,6 +30,16 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return CNN.objects.all()
 
+
+class BioView(generic.ListView):
+    template_name = 'trump/bio.html'
+    context_object_name = 'bio_list'
+
+    def get_queryset(self):
+        return Wikipedia.objects.all()
+
+def infographs(request):
+    return render(request, "infographs.html")
 
 def signup(request):
     if request.method == 'POST':

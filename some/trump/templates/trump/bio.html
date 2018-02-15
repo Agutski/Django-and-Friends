@@ -7,31 +7,27 @@
 <h1 class="main">THE GOD EMPEROR APP</h1>
 
 <div class="topnav">
-  <a class="active" href="{% url 'index' %}">Home</a>
-  <a href="{% url 'bio' %}">Bio</a>
+  <a href="{% url 'index' %}">Home</a>
+  <a class="active" href="{% url 'bio' %}">Bio</a>
   <a href="{% url 'infographs' %}">Infographs</a>
 </div>
 
-<div class="user_greetings">
 {% if user.is_authenticated %}
-  Hi {{ user.username }}, welcome to the president's fan page!
-
 
 <div class="news_table">
 
-<h1 class="sub">Latest Fake News</h2>
-
-{% if headline_list %}
-  <ul>
-  {% for headline in headline_list %}
-      <li>{{ headline.news_headline }}</li>
-  {% endfor %}
-  </ul>
-{% else %}
-    <p>No headlines are available.</p>
-{% endif %}
+  {% if bio_list %}
+    {% for person in bio_list %}
+        <h2>{{ person.page_title }}</h2>
+        <li>{{ person.page_summary }}</li>
+        <a href="{{ person.page_url }}">{{ person.page_url }}</a>
+    {% endfor %}
+  {% else %}
+      <p>No Bios are available.</p>
+  {% endif %}
 
 </div>
+
 
 <div class="logout">
   <button><a href="{% url 'logout' %}">logout</a></button>
@@ -40,11 +36,12 @@
 <div class="trump_img">
   <img src="/static/trump/images/trump.gif" alt="Trump" width="200" height="200">
 </div>
+
 {% else %}
   <div class="login">
     <p>You are not logged in, log in to see all the great content this site hides!</p>
     <a href="{% url 'login' %}">login</a>
   </div>
 {% endif %}
-</div>
+
 </body>

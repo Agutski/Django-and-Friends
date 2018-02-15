@@ -9,12 +9,29 @@ class Tweet(models.Model):
     tweet_time = models.CharField(max_length=100)
     ''' addition fields maybe '''
 
-class Trump(models.Model):
+class Profile(models.Model):
     def __str__(self):
-        return self.user_name
-    '''likes, followers, location etc. '''
+        return self.screen_name
+    screen_name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    created_at = models.CharField(max_length=100)
+    followers_count = models.IntegerField()
+    friends_count = models.IntegerField()
+    statuses_count = models.IntegerField()
+    favourites_count = models.IntegerField()
+    description = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+
 
 class CNN(models.Model):
     def __str__(self):
         return self.news_headline
     news_headline = models.CharField(max_length=100)
+
+class Wikipedia(models.Model):
+    def __str__(self):
+        return self.page_title
+    page_title = models.CharField(max_length=100)
+    page_url = models.CharField(max_length=100)
+    page_summary = models.CharField(max_length=200)
+    page_content = models.CharField(max_length=1000)

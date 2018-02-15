@@ -1,0 +1,28 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'trump/style.css' %}" />
+
+<body>
+
+<h1 class="main">THE GOD EMPEROR APP</h1>
+
+<div class="topnav">
+  <a href="{% url 'index' %}">Home</a>
+  <a href="{% url 'bio' %}">Bio</a>
+  <a class="active" href="{% url 'infographs' %}">Infographs</a>
+</div>
+
+{% if user.is_authenticated %}
+
+<div class="logout">
+  <button><a href="{% url 'logout' %}">logout</a></button>
+</div>
+
+{% else %}
+  <div class="login">
+    <p>You are not logged in, log in to see all the great content this site hides!</p>
+    <a href="{% url 'login' %}">login</a>
+  </div>
+{% endif %}
+
+</body>
