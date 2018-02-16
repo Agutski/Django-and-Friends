@@ -3,6 +3,7 @@ from django.conf.urls import url
 
 from . import views
 
+#urls used by the trump app
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     path('bio/', views.BioView.as_view(), name='bio'),

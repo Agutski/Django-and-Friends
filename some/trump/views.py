@@ -11,6 +11,12 @@ from django.views import generic
 from .models import Profile, Tweet, CNN, Wikipedia
 import wikipedia
 
+import sys
+import string
+import simplejson
+import json
+from twython import Twython
+
 #upadte wikipedia database
 Wikipedia.objects.all().delete()
 trump = wikipedia.page("Donald Trump")
@@ -22,7 +28,89 @@ page_content = trump.content
 w = Wikipedia(page_title= page_title, page_url = page_url, page_summary = page_summary, page_content= page_content)
 w.save()
 
+"""
+Use Twitter API to grab user information from list of organizations;
+export text file
+Uses Twython module to access Twitter API
+code by Gregory Saxton
+"""
+#update profile database
+#FOR OAUTH AUTHENTICATION -- NEEDED TO ACCESS THE TWITTER API
 
+#reads twitter authentication info from external source for security reasons, replace with your own local path to the keys - Aku
+json_data = open("/authentication/authentication.json").read()
+data = json.loads(json_data)
+
+app_key = data['app_key']
+app_secret = data['app_secret']
+oauth_token = data['oauth_token']
+oauth_token_secret = data['oauth_token_secret']
+
+t = Twython(app_key=app_key, #REPLACE 'APP_KEY' WITH YOUR APP KEY, ETC., IN THE NEXT 4 LINES
+    app_secret=app_secret,
+    oauth_token=oauth_token,
+    oauth_token_secret=oauth_token_secret)
+
+#REPLACE WITH YOUR LIST OF TWITTER USER IDS
+#this is Trump's twitter id - Aku
+ids = "25073877"
+
+#ACCESS THE LOOKUP_USER METHOD OF THE TWITTER API -- GRAB INFO ON UP TO 100 IDS WITH EACH API CALL
+#THE VARIABLE USERS IS A JSON FILE WITH DATA ON THE 32 TWITTER USERS LISTED ABOVE
+users = t.lookup_user(user_id = ids)
+
+#NAMES FOR HEADER ROW IN OUTPUT FILE
+fields = "id screen_name name created_at url followers_count friends_count statuses_count \
+    favourites_count listed_count \
+    contributors_enabled description protected location lang expanded_url".split()
+
+#THE VARIABLE 'USERS' CONTAINS INFORMATION OF THE 32 TWITTER USER IDS LISTED ABOVE
+#THIS BLOCK WILL LOOP OVER EACH OF THESE IDS, CREATE VARIABLES, AND OUTPUT TO FILE
+for entry in users:
+    #CREATE EMPTY DICTIONARY
+    r = {}
+    for f in fields:
+        r[f] = ""
+    #ASSIGN VALUE OF 'ID' FIELD IN JSON TO 'ID' FIELD IN OUR DICTIONARY
+    r['id'] = entry['id']
+    r['screen_name'] = entry['screen_name']
+    r['name'] = entry['name']
+    r['created_at'] = entry['created_at']
+    r['url'] = entry['url']
+    r['followers_count'] = entry['followers_count']
+    r['friends_count'] = entry['friends_count']
+    r['statuses_count'] = entry['statuses_count']
+    r['favourites_count'] = entry['favourites_count']
+    r['listed_count'] = entry['listed_count']
+    r['contributors_enabled'] = entry['contributors_enabled']
+    r['description'] = entry['description']
+    r['protected'] = entry['protected']
+    r['location'] = entry['location']
+    r['lang'] = entry['lang']
+    #NOT EVERY ID WILL HAVE A 'URL' KEY, SO CHECK FOR ITS EXISTENCE WITH IF CLAUSE
+    if 'url' in entry['entities']:
+        r['expanded_url'] = entry['entities']['url']['urls'][0]['expanded_url']
+    else:
+        r['expanded_url'] = ''
+    #print r
+    Profile.objects.all().delete()
+    screen_name = r['screen_name']
+    name = r['name']
+    created_at = r['created_at']
+    followers_count = r['followers_count']
+    friends_count = r['friends_count']
+    statuses_count = r['statuses_count']
+    favourites_count = r['favourites_count']
+    description = r['description']
+    location = r['location']
+
+    #saves the profile to our database
+    t = Profile(screen_name = screen_name, name = name, created_at = created_at, followers_count = followers_count,\
+     friends_count = friends_count, statuses_count = statuses_count, favourites_count = favourites_count, \
+      description = description, location = location )
+    t.save()
+
+#creates the index page
 class IndexView(generic.ListView):
     template_name = 'trump/index.html'
     context_object_name = 'headline_list'
@@ -30,7 +118,7 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return CNN.objects.all()
 
-
+#creates the bio page
 class BioView(generic.ListView):
     template_name = 'trump/bio.html'
     context_object_name = 'bio_list'
@@ -38,9 +126,11 @@ class BioView(generic.ListView):
     def get_queryset(self):
         return Wikipedia.objects.all()
 
+#placeholder for the upcoming info page
 def infographs(request):
     return render(request, "infographs.html")
 
+#creates the signup view
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

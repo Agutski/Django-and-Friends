@@ -9,6 +9,7 @@ class Tweet(models.Model):
     tweet_time = models.CharField(max_length=100)
     ''' addition fields maybe '''
 
+#table for twitter profile
 class Profile(models.Model):
     def __str__(self):
         return self.screen_name
@@ -22,12 +23,13 @@ class Profile(models.Model):
     description = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
 
-
+#table for custom fake news
 class CNN(models.Model):
     def __str__(self):
         return self.news_headline
     news_headline = models.CharField(max_length=100)
 
+#table for wikipedia articles
 class Wikipedia(models.Model):
     def __str__(self):
         return self.page_title
