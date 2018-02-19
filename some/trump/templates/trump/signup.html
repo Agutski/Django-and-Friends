@@ -1,5 +1,7 @@
 {% load static %}
 
+<title>The God Emperor</title>
+
 <link rel="stylesheet" type="text/css" href="{% static 'trump/style.css' %}" />
 
 <h1 class="main">THE GOD EMPEROR APP</h1>
@@ -7,7 +9,7 @@
 <div class="topnav">
   <a href="{% url 'index' %}">Home</a>
   <a href="{% url 'bio' %}">Bio</a>
-  <a href="#contact">Infographs</a>
+  <a href="{% url 'dashboard' %}">Infographs</a>
 </div>
 
 <div class="login">

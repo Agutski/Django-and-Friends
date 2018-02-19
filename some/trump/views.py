@@ -8,6 +8,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
+from dashing.views import Dashboard
+
 from .models import Profile, Tweet, CNN, Wikipedia
 import wikipedia
 
@@ -126,9 +128,6 @@ class BioView(generic.ListView):
     def get_queryset(self):
         return Wikipedia.objects.all()
 
-#placeholder for the upcoming info page
-def infographs(request):
-    return render(request, "infographs.html")
 
 #creates the signup view
 def signup(request):
