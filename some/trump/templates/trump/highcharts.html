@@ -1,0 +1,190 @@
+{% load static %}
+
+<head>
+<title>The God Emperor</title>
+
+<link rel="stylesheet" type="text/css" href="{% static 'trump/style.css' %}" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+
+
+</head>
+
+<body>
+
+<h1 class="main">THE GOD EMPEROR APP</h1>
+
+<div class="topnav">
+  <a href="{% url 'index' %}">Home</a>
+  <a href="{% url 'bio' %}">Bio</a>
+  <a class="active" href="{% url 'highcharts' %}">Highcharts</a>
+  <a href="{% url 'dashboard' %}">Dashing Beta</a>
+</div>
+
+{% if user.is_authenticated %}
+
+<div id="chart1" style="width:49%; height:40%;"></div>
+<div id="chart2" style="width:49%; height:40%; position:absolute; bottom:50px;"></div>
+<div id="chart3" style="width:49%; height:40%; position:absolute; top:125px; right:10px;"></div>
+<div id="chart4" style="width:49%; height:40%; position:absolute; bottom:45px; right:10px;"></div>
+
+<div class="logout">
+  <button><a href="{% url 'logout' %}">logout</a></button>
+</div>
+
+{% else %}
+  <div class="login">
+    <p>You are not logged in, log in to see all the great content this site hides!</p>
+    <a href="{% url 'login' %}">login</a>
+  </div>
+{% endif %}
+</div>
+</body>
+
+<script>
+
+$(function () {
+    var followers = new Array();
+                $.getJSON('http://localhost:8000/trump/api/json_data', function(data) {
+                    // Populate series
+                    for (i = 0; i < data.length; i++){
+                      //processed_json.push(data[i].name, data[i].statuses_count)
+                      followers.push([data[i].name, data[i].followers_count])
+                    }
+                    // draw chart
+                    $('#chart1').highcharts({
+                    chart: {
+                        type: "bar"
+                    },
+                    title: {
+                        text: "Twitter followers"
+                    },
+                    xAxis: {
+                        type: 'category',
+                        allowDecimals: false,
+                        title: {
+                            text: ""
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: "Followers"
+                        }
+                    },
+                    series: [{
+	                    name: 'News sites',
+                        data: followers
+                    }]
+                });
+            });
+        });
+
+        $(function () {
+            var statuses = new Array();
+                        $.getJSON('http://localhost:8000/trump/api/json_data', function(data) {
+                            // Populate series
+                            for (i = 0; i < data.length; i++){
+                              //processed_json.push(data[i].name, data[i].statuses_count)
+                              statuses.push([data[i].name, data[i].statuses_count])
+                            }
+                            // draw chart
+                            $('#chart2').highcharts({
+                            chart: {
+                                type: "column"
+                            },
+                            title: {
+                                text: "Number of status updates"
+                            },
+                            xAxis: {
+                                type: 'category',
+                                allowDecimals: false,
+                                title: {
+                                    text: ""
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: "Status updates"
+                                }
+                            },
+                            series: [{
+                              name: 'News sites',
+                                data: statuses
+                            }]
+                        });
+                    });
+                });
+
+                $(function () {
+                    var friends = new Array();
+                                $.getJSON('http://localhost:8000/trump/api/json_data', function(data) {
+                                    // Populate series
+                                    for (i = 0; i < data.length; i++){
+                                      //processed_json.push(data[i].name, data[i].statuses_count)
+                                      friends.push([data[i].name, data[i].friends_count])
+                                    }
+                                    // draw chart
+                                    $('#chart3').highcharts({
+                                    chart: {
+                                        type: "pie"
+                                    },
+                                    title: {
+                                        text: "Friends"
+                                    },
+                                    xAxis: {
+                                        type: 'category',
+                                        allowDecimals: false,
+                                        title: {
+                                            text: ""
+                                        }
+                                    },
+                                    yAxis: {
+                                        title: {
+                                            text: "Followers"
+                                        }
+                                    },
+                                    series: [{
+                	                    name: 'News sites',
+                                        data: friends
+                                    }]
+                                });
+                            });
+                        });
+
+                        $(function () {
+                            var favourites = new Array();
+                                        $.getJSON('http://localhost:8000/trump/api/json_data', function(data) {
+                                            // Populate series
+                                            for (i = 0; i < data.length; i++){
+                                              //processed_json.push(data[i].name, data[i].statuses_count)
+                                              favourites.push([data[i].name, data[i].favourites_count])
+                                            }
+                                            // draw chart
+                                            $('#chart4').highcharts({
+                                            chart: {
+                                                type: "line"
+                                            },
+                                            title: {
+                                                text: "Favourites"
+                                            },
+                                            xAxis: {
+                                                type: 'category',
+                                                allowDecimals: false,
+                                                title: {
+                                                    text: ""
+                                                }
+                                            },
+                                            yAxis: {
+                                                title: {
+                                                    text: "Favourites"
+                                                }
+                                            },
+                                            series: [{
+                                              name: 'News sites',
+                                                data: favourites
+                                            }]
+                                        });
+                                    });
+                                });
+
+</script>

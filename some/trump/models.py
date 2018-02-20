@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-
+# placeholder in case we want to showcase tweet text at some point 
 class Tweet(models.Model):
     def __str__(self):
         return self.tweet_text

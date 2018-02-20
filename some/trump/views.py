@@ -4,19 +4,23 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponseRedirect
+from django.http import JsonResponse
 from django.urls import reverse
 from django.views import generic
 
+#django-dashing import
 from dashing.views import Dashboard
 
 from .models import Profile, Tweet, CNN, Wikipedia
 import wikipedia
 
+#various libraries for processing json data
 import sys
 import string
 import simplejson
 import json
+import jsonpickle
+
 from twython import Twython
 
 #upadte wikipedia database
@@ -54,8 +58,8 @@ t = Twython(app_key=app_key, #REPLACE 'APP_KEY' WITH YOUR APP KEY, ETC., IN THE 
     oauth_token_secret=oauth_token_secret)
 
 #REPLACE WITH YOUR LIST OF TWITTER USER IDS
-#this is Trump's twitter id - Aku
-ids = "25073877"
+#this are Trump's and CNN's twitter ids - Aku
+ids = "25073877 , 759251"
 
 #ACCESS THE LOOKUP_USER METHOD OF THE TWITTER API -- GRAB INFO ON UP TO 100 IDS WITH EACH API CALL
 #THE VARIABLE USERS IS A JSON FILE WITH DATA ON THE 32 TWITTER USERS LISTED ABOVE
@@ -68,6 +72,9 @@ fields = "id screen_name name created_at url followers_count friends_count statu
 
 #THE VARIABLE 'USERS' CONTAINS INFORMATION OF THE 32 TWITTER USER IDS LISTED ABOVE
 #THIS BLOCK WILL LOOP OVER EACH OF THESE IDS, CREATE VARIABLES, AND OUTPUT TO FILE
+#empties the Profile database so it can be updated with new information
+Profile.objects.all().delete()
+
 for entry in users:
     #CREATE EMPTY DICTIONARY
     r = {}
@@ -94,8 +101,6 @@ for entry in users:
         r['expanded_url'] = entry['entities']['url']['urls'][0]['expanded_url']
     else:
         r['expanded_url'] = ''
-    #print r
-    Profile.objects.all().delete()
     screen_name = r['screen_name']
     name = r['name']
     created_at = r['created_at']
@@ -143,3 +148,13 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
+
+#creates the highcharts dashboard
+def highcharts(request):
+    return render(request, 'trump/highcharts.html')
+
+#passes information from our profile database in json format
+def json_data(request):
+    data = Profile.objects.all().values("name", "followers_count", "friends_count", "statuses_count", "favourites_count")
+
+    return JsonResponse(list(data), safe=False)

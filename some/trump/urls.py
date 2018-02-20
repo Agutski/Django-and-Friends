@@ -11,4 +11,6 @@ urlpatterns = [
     path('bio/', views.BioView.as_view(), name='bio'),
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^dashboard/', include(router.urls), name='dashboard'),
+    url(r'^api/json_data', views.json_data, name='json_data'),
+    url(r'^highcharts/$', views.highcharts, name='highcharts'),
 ]
